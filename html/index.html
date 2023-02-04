@@ -16,23 +16,21 @@
 
     <div class="menu">
       <ul>
-        <li>Candidato</li>
-        <li>Cargo</li>
-        <li>Município</li>
-        <li>Resultado Geral</li>
+        <li data-option="candidate">Candidato</li>
+        <li data-option="office">Cargo</li>
+        <li data-option="city">Município</li>
+        <li data-option="overallResult">Resultado Geral</li>
       </ul>
     </div>
     <div class="search-result">
-      <form action="">
-        <select name="options" id="search-select">
-          <option value="candidates">Candidatos</option>
-          <option value="value2">Cargo</option>
-          <option value="value3">Município</option>
-          <option value="value3">Resultado Geral</option>
-        </select>
+      <!-- <select name="options" id="search-select">
+        <option value="candidates">Candidatos</option>
+        <option value="value2">Cargo</option>
+        <option value="value3">Município</option>
+        <option value="value3">Resultado Geral</option>
+      </select> -->
 
-        <input type="text" placeholder="Faça a sua busca">
-      </form>
+      <input class="hidden" type="text" placeholder="Faça a sua busca">
 
     </div>
   </section>

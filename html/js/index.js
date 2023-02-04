@@ -1,9 +1,39 @@
 const input = document.querySelector('input')
+const menu = document.querySelector('.menu')
+let optionMenu = ''
+
+const handleMenuOptions = {
+  candidate() {
+    input.value = ''
+    input.classList.remove('hidden')
+    optionMenu = 'candidates'
+  },
+  office() {
+    input.classList.add('hidden')
+  },
+  city() {
+    input.classList.add('hidden')
+  },
+  overallResult() {
+    input.classList.add('hidden')
+  }  
+}
+
+menu.addEventListener('click', event => {
+  const optionsMenu = Array.from(menu.firstElementChild.children)
+  const clickedElement = event.target
+  const option = clickedElement.dataset.option
+
+  optionsMenu.forEach(item => item.classList.remove('selected'))
+  clickedElement.classList.add('selected')
+
+  handleMenuOptions[option]()
+})
 
 input.addEventListener('input', async () => {
-  const selectValue = document.querySelector('select').value
+  // const selectValue = document.querySelector('select').value
   const searchValue = input.value
-  const endpoint = `/${selectValue}`
+  const endpoint = `/${optionMenu}`
   
   console.log(searchValue)
  
@@ -16,18 +46,13 @@ input.addEventListener('input', async () => {
   })
 
   const data = await response.json()
-  console.log(data)
-  alert(data.value)
+  console.log('tipo do arquivo recebido no front');
+  console.log(typeof data)
+  console.log(data);
 })
 
-const menu = document.querySelector('.menu')
-
-menu.addEventListener('click', event => {
-  const itensMenu = Array.from(menu.firstElementChild.children)
-  const clickedElement = event.target
-
-  itensMenu.forEach(item => item.classList.remove('selected'))
-  clickedElement.classList.add('selected')
-})
-
-
+console.log('teste')
+// para não esquecer o roteiro do que precisa ser feito
+/*  1 - criar uma função para cada botão
+    2- criar um variavel global para salvar qual botão foi clicado para passar como rota
+ */
