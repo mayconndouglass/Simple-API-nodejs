@@ -7,7 +7,8 @@ const candidates = name => {
         candidato.status
         FROM candidato 
         INNER JOIN cargo ON candidato.cargo = cargo.id
-        INNER JOIN votacao ON candidato.id = votacao.candidato
+        INNER JOIN votacao ON candidato.id = votacao.candidato and
+        candidato.cargo = votacao.cargo
         WHERE candidato.nome like '${nameCand}%'
         GROUP BY candidato.nome;
     `
@@ -22,6 +23,7 @@ const offices = office => {
         FROM candidato 
         INNER JOIN cargo ON candidato.cargo = cargo.id
         INNER JOIN votacao ON candidato.id = votacao.candidato
+        and candidato.cargo = votacao.cargo
         WHERE cargo.nome like '%${office}%'
         GROUP BY candidato.nome;
     `
@@ -29,8 +31,28 @@ const offices = office => {
     return databaseQuery(sql)
 }
 
-function databaseQuery(sql) {    
-    /* console.log('sql')
+const cities = city => {
+
+    const cityUpper = city.toUpperCase()
+    const sql = `
+        SELECT candidato.nome, cargo.nome as cargo, SUM(votacao.votos) as votos,
+        candidato.status
+        FROM candidato
+        INNER JOIN cargo ON candidato.cargo = cargo.id
+        INNER JOIN votacao ON candidato.id = votacao.candidato AND
+        candidato.cargo = votacao.cargo
+        WHERE votacao.municipio = (SELECT id FROM municipio WHERE
+        nome LIKE '%${cityUpper}%')
+        GROUP BY candidato.nome, cargo.nome
+    `
+
+    return databaseQuery(sql)
+}
+
+
+function databaseQuery(sql) {  
+    console.log('Entrou no database');  
+    /* console.log('log sql')
     console.log(sql) */
     return new Promise((resolve, reject) => {
         sqlite.dataBase.all(
@@ -63,5 +85,6 @@ function databaseQuery(sql) {
 
 module.exports = {
     candidates,
-    offices
+    offices,
+    cities
 }

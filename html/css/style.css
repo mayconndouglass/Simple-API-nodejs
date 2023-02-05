@@ -192,3 +192,8 @@ input::placeholder {
 .menu-office ul li:hover {
   color: var( --color-primary);
 }
+
+.total-votes {
+  font-family: var(--font-primary);
+  margin-bottom: 20px;
+}

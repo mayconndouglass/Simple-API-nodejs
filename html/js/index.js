@@ -2,6 +2,7 @@ const input = document.querySelector('input')
 const button = document.querySelector('button')
 const menu = document.querySelector('.menu')
 const menuOffice = document.querySelector('.menu-office')
+const containerTotalVotes = document.querySelector('.total-votes')
 let optionMenu = ''
 
 const handleMenuOptions = {
@@ -13,18 +14,25 @@ const handleMenuOptions = {
   candidate() {
     input.value = ''
     menuOffice.classList.add('hidden')
+    containerTotalVotes.classList.add('hidden')
     this.togleHidden(0)
 
     optionMenu = 'candidates'
   },
   office() {
     this.togleHidden(1)
+    console.log('entrou');
     menuOffice.classList.remove('hidden')
+    containerTotalVotes.classList.add('hidden')
+    
     optionMenu = 'offices'
   },
-  city() {
+  cities() {
+    input.value = ''
     menuOffice.classList.add('hidden')
-    this.togleHidden(1)
+    this.togleHidden(0)
+    
+    optionMenu = 'cities'
   },
   overallResult() {
     menuOffice.classList.add('hidden')
@@ -63,19 +71,30 @@ const titleResult = `
   </div>
 `
 
-const showDataOnScreen = ({ data }) => {
+const showDataOnScreen = ({ data }, showTotal) => {
   const containerResult = document.querySelector('.result')
+  let countVotes = 0
+  
   containerResult.innerHTML = ''
   containerResult.innerHTML = titleResult
-
+  containerTotalVotes.innerHTML = ''
+  
   console.log(data)
-  data.forEach( line => {
+  data.forEach( line => {  
     const div = document.createElement('div')
-    div.classList.add('result-line')
 
+    if (showTotal) {
+      countVotes += line.votes
+      containerTotalVotes.classList.remove('hidden')
+    }
+          
+    div.classList.add('result-line')    
     div.innerHTML += formatLine(line)
     containerResult.appendChild(div)
   })
+  
+  containerTotalVotes.innerHTML = `
+    <h4>Total de votos nessa cidade: ${countVotes}<h4>`
 }
 
 const requestData = async (endpoint, searchValue) => {
@@ -93,7 +112,7 @@ const requestData = async (endpoint, searchValue) => {
 
   const data = await response.json()
   console.log(data);
-  showDataOnScreen(data)
+  endpoint === '/cities' ? showDataOnScreen(data, 1) : showDataOnScreen(data, 0)
 }
 
 button.addEventListener('click', async () => {
@@ -116,7 +135,6 @@ menuOffice.addEventListener('click', async event => {
   requestData(endpoint, searchValue)
 })
 
-// para não esquecer o roteiro do que precisa ser feito
-/*  1 - criar uma função para cada botão
-    2- criar um variavel global para salvar qual botão foi clicado para passar como rota
- */
+
+/* 1 - criar 3 check box no html 
+2 -  */ 
