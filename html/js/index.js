@@ -3,7 +3,9 @@ const button = document.querySelector('button')
 const menu = document.querySelector('.menu')
 const menuOffice = document.querySelector('.menu-office')
 const containerTotalVotes = document.querySelector('.total-votes')
+const radios = document.querySelector('.radio')
 let optionMenu = ''
+let dataGlobal = ''
 
 const handleMenuOptions = {
   togleHidden(action) {
@@ -16,20 +18,22 @@ const handleMenuOptions = {
     menuOffice.classList.add('hidden')
     containerTotalVotes.classList.add('hidden')
     this.togleHidden(0)
+    radios.classList.add('hidden')
 
     optionMenu = 'candidates'
   },
   office() {
     this.togleHidden(1)
-    console.log('entrou');
     menuOffice.classList.remove('hidden')
     containerTotalVotes.classList.add('hidden')
+    radios.classList.add('hidden')
     
     optionMenu = 'offices'
   },
   cities() {
     input.value = ''
     menuOffice.classList.add('hidden')
+    radios.classList.add('hidden')
     this.togleHidden(0)
     
     optionMenu = 'cities'
@@ -37,7 +41,12 @@ const handleMenuOptions = {
   overallResult() {
     menuOffice.classList.add('hidden')
     this.togleHidden(1)
-  }  
+    radios.classList.remove('hidden')
+    containerTotalVotes.classList.add('hidden')
+    optionMenu = '/overalResult'
+    
+    requestData(optionMenu, '*')
+  }
 }
 
 menu.addEventListener('click', event => {
@@ -55,7 +64,7 @@ const formatLine = ({ name, office, votes, status }) => {
   const formattedLine = `
     <span class="candName">${name}</span>
     <span>${office}</span>
-    <span>${votes}</span>
+    <span>${votes.toLocaleString('pt-BR')}</span>
     <span>${status}</span>
   `
 
@@ -79,7 +88,6 @@ const showDataOnScreen = ({ data }, showTotal) => {
   containerResult.innerHTML = titleResult
   containerTotalVotes.innerHTML = ''
   
-  console.log(data)
   data.forEach( line => {  
     const div = document.createElement('div')
 
@@ -94,10 +102,10 @@ const showDataOnScreen = ({ data }, showTotal) => {
   })
   
   containerTotalVotes.innerHTML = `
-    <h4>Total de votos nessa cidade: ${countVotes}<h4>`
+    <h4>Total de votos nessa cidade: ${countVotes.toLocaleString('pt-BR')}<h4>`
 }
 
-const requestData = async (endpoint, searchValue) => {
+async function requestData (endpoint, searchValue) {
   if (!searchValue) {
     return
   }
@@ -111,7 +119,8 @@ const requestData = async (endpoint, searchValue) => {
   })
 
   const data = await response.json()
-  console.log(data);
+  dataGlobal = data
+
   endpoint === '/cities' ? showDataOnScreen(data, 1) : showDataOnScreen(data, 0)
 }
 
@@ -135,6 +144,38 @@ menuOffice.addEventListener('click', async event => {
   requestData(endpoint, searchValue)
 })
 
+const showDataOnScreenOverall = ({ data }, option) => {
+  const containerResult = document.querySelector('.result')
+  
+  containerResult.innerHTML = ''
+  containerResult.innerHTML = titleResult
 
-/* 1 - criar 3 check box no html 
-2 -  */ 
+  data.forEach( line => {  
+    const div = document.createElement('div')
+    const match = line.status == 'Eleito'
+
+    if (option && !match) {
+      return
+    }
+
+    if (!option && match) {
+      return
+    }
+    
+    div.classList.add('result-line')    
+    div.innerHTML += formatLine(line)
+    containerResult.appendChild(div)
+  })
+}
+
+radios.addEventListener('change', event => {
+  const elementChanged = event.target
+
+  if (elementChanged.value === 'eleitos') {
+    showDataOnScreenOverall(dataGlobal, 1)
+  } else if (elementChanged.value === 'nao-eleitos') {
+    showDataOnScreenOverall(dataGlobal, 0)
+  } else {
+    showDataOnScreen(dataGlobal)
+  }
+})

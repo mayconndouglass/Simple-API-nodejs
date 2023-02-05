@@ -51,7 +51,6 @@ body {
 
 .menu ul {
   display: flex;
-  /* gap: 5px; */
   font-size: 1.4rem;
   font-family: 'Roboto';
   color: var(--color-secondaty-four);
@@ -76,7 +75,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .search-result {
@@ -87,8 +86,7 @@ body {
   height: 100px;
 }
 
-input {
-  /* margin-top: 40px; */
+input[type= text] {
   width: 100%;
   padding: 10px;
   outline: none;
@@ -123,15 +121,14 @@ input::placeholder {
 
 .result {
   padding: 40px 20px;
-  /* background-color: var(--color-background); */
   background-color: #eee;
   border-radius: 4px;
   font-size: 1.4rem;
   font-family: var(--font-primary);
-  margin: 0px auto 0;
+  margin: 0px auto 80px;
   width: 80%;
   color: var(--color-secondary-contrast);
-  height: 600px;
+  height: 62vh;
   box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
   overflow-y: scroll;
 }
@@ -139,7 +136,7 @@ input::placeholder {
 .result-title {
   color: var(--color-text-default);
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 20px !important;
 }
 
 .result-line {
@@ -156,7 +153,7 @@ input::placeholder {
 
 .menu-office ul {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .menu-office ul li {
@@ -196,4 +193,34 @@ input::placeholder {
 .total-votes {
   font-family: var(--font-primary);
   margin-bottom: 20px;
+  color: var(--color-secondaty-three);
+  font-weight: 400;
+}
+
+.radio {
+  display: flex;
+  justify-content: center;
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  color: var(--color-secondaty-three);
+}
+
+.radio input {
+  margin: 0 5px 0 30px;
+  cursor: pointer;
+}
+
+
+.result::-webkit-scrollbar {
+  width: 0.3em;
+  background-color: #F5F5F5;
+}
+ 
+.result::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+}
+ 
+.result::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
 }

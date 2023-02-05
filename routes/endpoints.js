@@ -1,59 +1,51 @@
 const sqlite = require('../database.js')
 
-const candidates = name => {
-    const nameCand = name.toUpperCase()
-    const sql = `
+const standardFormat = where => {
+    const format = `
         SELECT candidato.nome, cargo.nome as cargo, sum(votacao.votos) as votos,
         candidato.status
         FROM candidato 
         INNER JOIN cargo ON candidato.cargo = cargo.id
         INNER JOIN votacao ON candidato.id = votacao.candidato and
         candidato.cargo = votacao.cargo
-        WHERE candidato.nome like '${nameCand}%'
-        GROUP BY candidato.nome;
+        LEFT JOIN partido ON candidato.nome = partido.nome
+        ${where}
+        AND candidato.nome NOT IN ('Nulo', 'Branco')
+        AND partido.nome IS NULL
+        GROUP BY candidato.nome
+        ORDER BY candidato.nome;
     `
+    return format
+}
+
+const candidates = name => {
+    const nameCand = name.toUpperCase()
+    const sql = standardFormat(`WHERE candidato.nome like '${nameCand}%'`)
 
     return databaseQuery(sql)
 }
 
 const offices = office => {
-    const sql = `
-        SELECT candidato.nome, cargo.nome as cargo, sum(votacao.votos) as votos,
-        candidato.status
-        FROM candidato 
-        INNER JOIN cargo ON candidato.cargo = cargo.id
-        INNER JOIN votacao ON candidato.id = votacao.candidato
-        and candidato.cargo = votacao.cargo
-        WHERE cargo.nome like '%${office}%'
-        GROUP BY candidato.nome;
-    `
-    
+    const sql = standardFormat(`WHERE cargo.nome like '%${office}%'`)
     return databaseQuery(sql)
 }
 
 const cities = city => {
-
-    const cityUpper = city.toUpperCase()
-    const sql = `
-        SELECT candidato.nome, cargo.nome as cargo, SUM(votacao.votos) as votos,
-        candidato.status
-        FROM candidato
-        INNER JOIN cargo ON candidato.cargo = cargo.id
-        INNER JOIN votacao ON candidato.id = votacao.candidato AND
-        candidato.cargo = votacao.cargo
-        WHERE votacao.municipio = (SELECT id FROM municipio WHERE
-        nome LIKE '%${cityUpper}%')
-        GROUP BY candidato.nome, cargo.nome
-    `
+    const where = `WHERE votacao.municipio = 
+        (SELECT id FROM municipio WHERE nome LIKE '%${city.toUpperCase()}%')`
+    const sql = standardFormat(where)
 
     return databaseQuery(sql)
 }
 
+const overallResult = search => {
+    const sql = standardFormat(`WHERE candidato.nome NOT IN ('maycon', 'douglas')`)
+    return databaseQuery(sql)
+}
 
-function databaseQuery(sql) {  
-    console.log('Entrou no database');  
-    /* console.log('log sql')
-    console.log(sql) */
+
+
+function databaseQuery(sql) {
     return new Promise((resolve, reject) => {
         sqlite.dataBase.all(
             sql,
@@ -61,9 +53,6 @@ function databaseQuery(sql) {
                 if (error) {
                     reject(error)
                 }
-                
-                console.log('log rows');
-                console.log(rows)
 
                 const data = rows.map((cand) => {
                     return {
@@ -73,9 +62,6 @@ function databaseQuery(sql) {
                         status: cand.status === 1 ? 'Eleito' : 'Não eleito' 
                     }
                 })
-
-                console.log('log do endpoint');
-                console.log(data)
                 
                 resolve(data)
             }
@@ -86,5 +72,6 @@ function databaseQuery(sql) {
 module.exports = {
     candidates,
     offices,
-    cities
+    cities,
+    overallResult
 }

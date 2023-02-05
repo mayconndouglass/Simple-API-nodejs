@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="./js/index.js" defer></script>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="./fav/pesquisa.png">
   <title>Eleições 2022</title>
 </head>
 
@@ -37,12 +38,15 @@
           </ul>
         </section>
 
-        <section class="checkBox">
-          <label for="Todos"></label>
-          <input type="checkbox" name="todos" id="todos">
+        <section class="radio hidden">
+          <input type="radio" name="options" id="todos" value="todos" checked>
+          <label for="Todos">Todos</label>
 
-          <label for="eleitos"></label>
-          <input type="checkbox" name="eleitos" id="eleitos">
+          <input type="radio" name="options" id="eleitos" value="eleitos">
+          <label for="eleitos">Eleitos</label>
+
+          <input type="radio" name="options" id="na-eleitos" value="nao-eleitos">
+          <label for="nao-eleitos">Não Eleitos</label>
         </section>
       </div>
 
