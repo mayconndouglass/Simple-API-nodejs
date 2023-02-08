@@ -102,7 +102,8 @@ const showDataOnScreen = ({ data }, showTotal) => {
   })
   
   containerTotalVotes.innerHTML = `
-    <h4>Total de votos nessa cidade: ${countVotes.toLocaleString('pt-BR')}<h4>`
+    <h4>Total de votos nessa cidade: 
+    ${countVotes.toLocaleString('pt-BR')}<h4>`
 }
 
 async function requestData (endpoint, searchValue) {

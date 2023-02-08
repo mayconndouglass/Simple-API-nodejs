@@ -43,8 +43,6 @@ const overallResult = search => {
     return databaseQuery(sql)
 }
 
-
-
 function databaseQuery(sql) {
     return new Promise((resolve, reject) => {
         sqlite.dataBase.all(
